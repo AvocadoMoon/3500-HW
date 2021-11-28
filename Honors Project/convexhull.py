@@ -11,7 +11,10 @@ compute and return the (x,y) coordinates
 of the y intercept of the line segment p1->p2
 with the line segment (x,y3)->(x,y4)
 '''
-#
+# shoudl be used to see if point a + 1, b + 1, a - 1, and b - 1 to make sure it does not intercept with the
+# tangent line, input a + 1 x cord for x, region between the two points for y3, y4
+# if the y point from this function is equivelant to the y point of a + 1 then it is known an interception happens
+# and can not use that tangent  
 def yint(p1, p2, x, y3, y4):
 	x1, y1 = p1
 	x2, y2 = p2
@@ -82,12 +85,42 @@ Replace the implementation of computeHull with a correct computation of the conv
 using the divide-and-conquer algorithm
 '''
 def computeHull(points):
+	# if len(points) != 2:
+	# 	mid = len(points) //2
+	# 	A = computeHull(points[:mid])
+	# 	B = computeHull(points[mid:])
+	# 	sort = []
+	# 	while len(A) !=0 and len(B) != 0:
+	# 		if A[0][0] > B[0][0]:
+	# 			sort.append(B[0])
+	# 			B.pop(0)
+	# 			if len(B == 0):
+	# 				sort.extend(A)
+	# 		else:
+	# 			sort.append(A[0])
+	# 			A.pop(0)
+	# 			if len(A == 0):
+	# 				sort.extend(A)
+		
+		
+	# else:
+	# 	if points[0][0] > points[1][0]:
+	# 		points[0], points[1] = points[1], points[0]
+	# 		return points
+	# 	return points
 	print(points)
-	clockwiseSort(points)
+	#clockwiseSort(points)
 	print(points)
 	return points
 
 '''
+FACTS:
+
+Points that get returned are part of the current hull, not the whole set of points will be returned.
+'''
+
+'''
+Intial sorting of list takes O(nlogn) time plus the O(n/2) time for going through the list and inching down to lowest tangential
 Split the list of points into smallest list possible, set of 2
 Afterwards, while merging sort the lists, this should take O(n) time, in addition after sort
 then compute the lowest tangent possible for that set taking another O(n) time. In total it sould be
@@ -95,3 +128,14 @@ T(n) = 2T(n/2) + O(n) + O(n) => T(n) = 2T(n/2) + O(2n)
 
 Finding the low
 '''
+
+'''
+A convex hull is the smallest possible polygonal shape that can envelope some points within a graph.
+So by finding the convex hull at step i, all that is needed to know the convex hull at step i+1 is a lower tangential line that
+connects the two convex hulls and an upper line that connects the two convex hulls. Now those two convex hulls become one large convex hull.
+
+Smallest possible convex hull would be a triangle since it only contains three points, yet still creats a geometric shape
+'''
+
+x, y = yint((1,1), (4,5), 3, 0, 4)
+print(x, y)

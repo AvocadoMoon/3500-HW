@@ -47,7 +47,10 @@ canvas_height = 800
 w = Canvas(master, 
            width=canvas_width,
            height=canvas_height)
-ram = PhotoImage(file=r"C:\Users\Zeke\OneDrive\School\CS\CS_3500\HW\Honors Project\oldhusky.gif")
+
+laptop = r"E:\Downloads\School\CS\CS 3500\3500-HW\Honors Project\oldhusky.gif"
+pc = r"C:\Users\Zeke\OneDrive\School\CS\CS_3500\HW\Honors Project\oldhusky.gif"
+ram = PhotoImage(file=laptop)
 w.pack()
 w.bind('<Button-1>', addPoint)
 
