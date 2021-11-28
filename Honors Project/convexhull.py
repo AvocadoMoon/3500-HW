@@ -36,6 +36,7 @@ def triangleArea(a, b, c):
 	return (a[0]*b[1] - a[1]*b[0] + a[1]*c[0] \
                 - a[0]*c[1] + b[0]*c[1] - c[0]*b[1]) / 2.0;
 
+#for a, b, c, a is point from Set A, b is point from set B, and c is the point of the tangent line
 '''
 Given three points a,b,c,
 returns True if and only if 
