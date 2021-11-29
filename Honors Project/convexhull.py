@@ -41,6 +41,7 @@ def triangleArea(a, b, c):
                 - a[0]*c[1] + b[0]*c[1] - c[0]*b[1]) / 2.0;
 
 
+#check if a-1 -> a -> a+1 are clockwise
 '''
 Given three points a,b,c,
 returns True if and only if 
@@ -80,19 +81,20 @@ def clockwiseSort(points):
 	angle = lambda p:  ((math.atan2(p[1] - yavg, p[0] - xavg) + 2*math.pi) % (2*math.pi))
 	points.sort(key = angle)
 
-def tangent(a, b, A, B, ai, bi, upperOrLower):
+def tangent(mPoint, oPoint, set, mIndex, upperOrLower):
 	def intercept(index, set, mPoint, point, i):
 		n = (index + i) % len(set)
 		n = set[n]
 		return yint(mPoint, point, n[0], mPoint[1], point[1]), n[1]
-	aXP, aYP, aP = intercept(ai, A, a, b, 1)
-	aXN, aYN, aN = intercept(ai, A, a, b, -1)
-	bXP, bYP, bP = intercept(bi, B, b, a, 1)
-	bXN, bYN, bN = intercept(bi, B, b, a, -1)
+	mXP, mYP, mP = intercept(mIndex, set, mPoint, oPoint, 1)
+	#mXN, mYN, mN = intercept(mIndex, set, mPoint, oPoint, -1)
 
-	#if any of the tangents intersect their own shape then it can not be the lowest tangent, may have to do only for A set idk if I have to do it for B
-	if (aYP == aP) or (aYN == aN) or (bYP == bP) or (bYN == bN):
+	#checks if the tangent line intersects the hull on its way to the other point
+	if (mYP == mP):
 		return False
+
+	#if both (a+1, a-1) are either to the left of a vertical tangent or above the tangent then the tangent is lower bounded, else it is not
+	
 
 '''
 Replace the implementation of computeHull with a correct computation of the convex hull
@@ -139,6 +141,8 @@ def computeHull(points):
 FACTS:
 
 Points that get returned are part of the current hull, not the whole set of points will be returned.
+No three points forming the hull can be colinear.
+No two points are on a vertical line
 '''
 
 '''
