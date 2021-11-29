@@ -81,19 +81,37 @@ def clockwiseSort(points):
 	angle = lambda p:  ((math.atan2(p[1] - yavg, p[0] - xavg) + 2*math.pi) % (2*math.pi))
 	points.sort(key = angle)
 
-def tangent(mPoint, oPoint, set, mIndex, upperOrLower):
-	def intercept(index, set, mPoint, point, i):
-		n = (index + i) % len(set)
-		n = set[n]
-		return yint(mPoint, point, n[0], mPoint[1], point[1]), n[1]
-	mXP, mYP, mP = intercept(mIndex, set, mPoint, oPoint, 1)
-	#mXN, mYN, mN = intercept(mIndex, set, mPoint, oPoint, -1)
+def slope(a, b):
+	m = (a[0] - b[0]) / (a[1] - b[1])
+	return m
 
-	#checks if the tangent line intersects the hull on its way to the other point
-	if (mYP == mP):
-		return False
+def yIntercept(a, m):
+	b = a[1] / (m * a[0])
+	return b
 
-	#if both (a+1, a-1) are either to the left of a vertical tangent or above the tangent then the tangent is lower bounded, else it is not
+def yInterceptForm(m, x, b):
+	return (m*x) + b
+
+def tangent(mPoint, oPoint, set, mIndex, upper=True):
+	n = (mIndex + 1) % len(set)
+	z1 = set[n]
+	n = (mIndex - 1) % len(set)
+	z1n = set[n]
+	m = slope(mPoint, oPoint)
+	b = yIntercept(mPoint, m)
+	y1 = yInterceptForm(m, z1[0], b)
+	y1n = yInterceptForm(m, z1n[0], b)
+
+	#really just need to check if the points +- are both either above or below the tangent line which getting the actal slope formula for the line helps a lot
+	if upper:
+		if (y1 > z1[1]) or (y1n > z1n[1]):
+			return False
+		return True
+	if not upper:
+		if (y1 < z1[1]) or (y1n < z1n[1]):
+			return False
+		return True
+			
 	
 
 '''
@@ -120,9 +138,31 @@ def computeHull(points):
 				if len(A == 0):
 					sort.extend(A)
 		
+		ai = -1
+		bi = 0
 		a = A[-1]
 		b = B[0]
 
+		#gets upper tangent
+		while tangent(a, b, A, ai, True) and tangent(b, a, B, bi, True):
+			while not(tangent(a, b, A, ai, True)):
+				ai -= 1
+				a = A[ai]
+			while not(tangent(b, a, B, bi, True)):
+				bi += 1
+				b = B[bi]
+
+		#gets lower tangent
+		while tangent(a, b, A, ai, False) and tangent(b, a, B, bi, False):
+			while not(tangent(a, b, A, ai, False)):
+				ai -= 1
+				a = A[ai]
+			while not(tangent(b, a, B, bi, False)):
+				bi += 1
+				b = B[bi]
+		
+		#need to figure out what to do with these tangents, and how to implement them within the united set
+		# maybe ever point past the x point from the newly made tangent then get ride of from hull
 		
 
 		
