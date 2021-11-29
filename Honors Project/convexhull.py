@@ -40,7 +40,7 @@ def triangleArea(a, b, c):
 	return (a[0]*b[1] - a[1]*b[0] + a[1]*c[0] \
                 - a[0]*c[1] + b[0]*c[1] - c[0]*b[1]) / 2.0;
 
-#for a, b, c, a is point from Set A, b is point from set B, and c is the point of the tangent line
+
 '''
 Given three points a,b,c,
 returns True if and only if 
@@ -80,34 +80,56 @@ def clockwiseSort(points):
 	angle = lambda p:  ((math.atan2(p[1] - yavg, p[0] - xavg) + 2*math.pi) % (2*math.pi))
 	points.sort(key = angle)
 
+def tangent(a, b, A, B, ai, bi, upperOrLower):
+	def intercept(index, set, mPoint, point, i):
+		n = (index + i) % len(set)
+		n = set[n]
+		return yint(mPoint, point, n[0], mPoint[1], point[1]), n[1]
+	aXP, aYP, aP = intercept(ai, A, a, b, 1)
+	aXN, aYN, aN = intercept(ai, A, a, b, -1)
+	bXP, bYP, bP = intercept(bi, B, b, a, 1)
+	bXN, bYN, bN = intercept(bi, B, b, a, -1)
+
+	#if any of the tangents intersect their own shape then it can not be the lowest tangent, may have to do only for A set idk if I have to do it for B
+	if (aYP == aP) or (aYN == aN) or (bYP == bP) or (bYN == bN):
+		return False
+
 '''
 Replace the implementation of computeHull with a correct computation of the convex hull
-using the divide-and-conquer algorithm
+using the divide-and-conquer algorithm. Must return points in clockwise order for drawing purposes.
 '''
 def computeHull(points):
-	# if len(points) != 2:
-	# 	mid = len(points) //2
-	# 	A = computeHull(points[:mid])
-	# 	B = computeHull(points[mid:])
-	# 	sort = []
-	# 	while len(A) !=0 and len(B) != 0:
-	# 		if A[0][0] > B[0][0]:
-	# 			sort.append(B[0])
-	# 			B.pop(0)
-	# 			if len(B == 0):
-	# 				sort.extend(A)
-	# 		else:
-	# 			sort.append(A[0])
-	# 			A.pop(0)
-	# 			if len(A == 0):
-	# 				sort.extend(A)
+	if len(points) != 2:
+		mid = len(points) //2
+		A = computeHull(points[:mid])
+		B = computeHull(points[mid:])
+		sort = []
+
+		#sort the points by x cords
+		while len(A) !=0 and len(B) != 0:
+			if A[0][0] > B[0][0]:
+				sort.append(B[0])
+				B.pop(0)
+				if len(B == 0):
+					sort.extend(A)
+			else:
+				sort.append(A[0])
+				A.pop(0)
+				if len(A == 0):
+					sort.extend(A)
+		
+		a = A[-1]
+		b = B[0]
+
+		
+
 		
 		
-	# else:
-	# 	if points[0][0] > points[1][0]:
-	# 		points[0], points[1] = points[1], points[0]
-	# 		return points
-	# 	return points
+	else:
+		if points[0][0] > points[1][0]:
+			points[0], points[1] = points[1], points[0]
+			return points
+		return points
 	print(points)
 	#clockwiseSort(points)
 	print(points)
