@@ -82,15 +82,19 @@ def clockwiseSort(points):
 	points.sort(key = angle)
 
 def slope(a, b):
-	m = (a[0] - b[0]) / (a[1] - b[1])
+	m = (a[1] - b[1]) / (a[0] - b[0])
 	return m
 
-def yIntercept(a, m):
-	b = a[1] / (m * a[0])
+def yIntercept(a, m, b):
+	b = a[1] - (m * a[0])
 	return b
 
 def yInterceptForm(m, x, b):
 	return (m*x) + b
+
+#determines whether a point is within the area, maybe use triangles?
+def inBetween(a, b, c):
+	pass
 
 def tangent(mPoint, oPoint, set, mIndex, upper=True):
 	n = (mIndex + 1) % len(set)
@@ -98,7 +102,7 @@ def tangent(mPoint, oPoint, set, mIndex, upper=True):
 	n = (mIndex - 1) % len(set)
 	z1n = set[n]
 	m = slope(mPoint, oPoint)
-	b = yIntercept(mPoint, m)
+	b = yIntercept(mPoint, m, oPoint)
 	y1 = yInterceptForm(m, z1[0], b)
 	y1n = yInterceptForm(m, z1n[0], b)
 
@@ -119,63 +123,65 @@ Replace the implementation of computeHull with a correct computation of the conv
 using the divide-and-conquer algorithm. Must return points in clockwise order for drawing purposes.
 '''
 def computeHull(points):
-	if len(points) != 2:
+	if len(points) > 3:
 		mid = len(points) //2
-		A = computeHull(points[:mid])
-		B = computeHull(points[mid:])
-		sort = []
+		A, asort = computeHull(points[:mid])
+		B, bsort = computeHull(points[mid:])
 
 		#sort the points by x cords
-		while len(A) !=0 and len(B) != 0:
-			if A[0][0] > B[0][0]:
-				sort.append(B[0])
-				B.pop(0)
-				if len(B == 0):
-					sort.extend(A)
-			else:
-				sort.append(A[0])
-				A.pop(0)
-				if len(A == 0):
-					sort.extend(A)
+		# while len(A) !=0 and len(B) != 0:
+		# 	if A[0][0] > B[0][0]:
+		# 		sort.append(B[0])
+		# 		B.pop(0)
+		# 		if len(B == 0):
+		# 			sort.extend(A)
+		# 	else:
+		# 		sort.append(A[0])
+		# 		A.pop(0)
+		# 		if len(A == 0):
+		# 			sort.extend(A)
 		
-		ai = -1
+		# needed sorted x list to find the rightmost or leftmost point in either A or B
+		# then the clockwise sort is needed because of rotating through the hull
+		ai = len(asort) - 1
 		bi = 0
-		a = A[-1]
-		b = B[0]
+		aUpper, aLower = asort[ai]
+		bUpper, bLower = bsort[bi]
+		ai = A.index(aUpper)
+		bi = B.index(bUpper)
+
 
 		#gets upper tangent
-		while tangent(a, b, A, ai, True) and tangent(b, a, B, bi, True):
-			while not(tangent(a, b, A, ai, True)):
-				ai -= 1
-				a = A[ai]
-			while not(tangent(b, a, B, bi, True)):
-				bi += 1
-				b = B[bi]
+		while not(tangent(aUpper, bUpper, A, ai, True)) and not(tangent(bUpper, aUpper, B, bi, True)):
+			while not(tangent(aUpper, bUpper, A, ai, True)):
+				ai = (ai + 1) % len(A)
+				aUpper = A[ai]
+			while not(tangent(bUpper, aUpper, B, bi, True)):
+				bi = (bi - 1) % len(B)
+				bUpper = B[bi]
 
 		#gets lower tangent
-		while tangent(a, b, A, ai, False) and tangent(b, a, B, bi, False):
-			while not(tangent(a, b, A, ai, False)):
-				ai -= 1
-				a = A[ai]
-			while not(tangent(b, a, B, bi, False)):
-				bi += 1
-				b = B[bi]
+		while not(tangent(aLower, bLower, A, ai, False)) and not(tangent(bLower, aLower, B, bi, False)):
+			while not(tangent(aLower, bLower, A, ai, False)):
+				ai = (ai - 1) % len(A)
+				aLower = A[ai]
+			while not(tangent(bLower, aLower, B, bi, False)):
+				bi = (bi + 1) % len(B)
+				bLower = B[bi]
+		
+		hull = [f for f in A and B if  True] #need to continue working on this
 		
 		#need to figure out what to do with these tangents, and how to implement them within the united set
 		# maybe ever point past the x point from the newly made tangent then get ride of from hull
-		
-
-		
-		
 	else:
-		if points[0][0] > points[1][0]:
-			points[0], points[1] = points[1], points[0]
-			return points
-		return points
-	print(points)
-	#clockwiseSort(points)
-	print(points)
-	return points
+		xsort = sorted(points, key=lambda p: p[0])
+		#xsort = points.sort(key = lambda p: p[0])
+		clockwiseSort(points)
+		return points, xsort
+	# print(points)
+	# clockwiseSort(points)
+	# print(points)
+	# return points
 
 '''
 FACTS:
@@ -202,6 +208,3 @@ connects the two convex hulls and an upper line that connects the two convex hul
 
 Smallest possible convex hull would be a triangle since it only contains three points, yet still creats a geometric shape
 '''
-
-x, y = yint((1,1), (4,5), 3, 0, 4)
-print(x, y)
