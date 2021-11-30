@@ -81,19 +81,26 @@ def clockwiseSort(points):
 	angle = lambda p:  ((math.atan2(p[1] - yavg, p[0] - xavg) + 2*math.pi) % (2*math.pi))
 	points.sort(key = angle)
 
-def slope(a, b):
-	m = (a[1] - b[1]) / (a[0] - b[0])
-	return m
+class Line():
+	def __init__(self, a, b):
+		self.a = a
+		self.b = b
+		self.m = 0
+		self.yInt = 0
+		self.slope(a, b)
+		self.yIntercept(a, self.m)
+	
+	def slope(self, a, b):
+		self.m = (a[1] - b[1]) / (a[0] - b[0])
 
-def yIntercept(a, m, b):
-	b = a[1] - (m * a[0])
-	return b
+	def yIntercept(self, a, m):
+		self.yInt = a[1] - (m * a[0])
 
-def yInterceptForm(m, x, b):
-	return (m*x) + b
+	def pointSlope(self, x):
+		return (self.m*x) + self.b
 
-#determines whether a point is within the area, maybe use triangles?
-def inBetween(a, b, c):
+#determines whether a point is within the area
+def inBetween(aUpper, aLower, bUpper):
 	pass
 
 def tangent(mPoint, oPoint, set, mIndex, upper=True):
@@ -101,10 +108,9 @@ def tangent(mPoint, oPoint, set, mIndex, upper=True):
 	z1 = set[n]
 	n = (mIndex - 1) % len(set)
 	z1n = set[n]
-	m = slope(mPoint, oPoint)
-	b = yIntercept(mPoint, m, oPoint)
-	y1 = yInterceptForm(m, z1[0], b)
-	y1n = yInterceptForm(m, z1n[0], b)
+	line = Line(mPoint, oPoint)
+	y1 = line.pointSlope(z1[0])
+	y1n = line.pointSlope(z1n[0])
 
 	#really just need to check if the points +- are both either above or below the tangent line which getting the actal slope formula for the line helps a lot
 	if upper:
@@ -168,6 +174,11 @@ def computeHull(points):
 			while not(tangent(bLower, aLower, B, bi, False)):
 				bi = (bi + 1) % len(B)
 				bLower = B[bi]
+		
+		upperLine = Line(aUpper, bUpper)
+		lowerLine = Line(aLower, bLower)
+		aa = Line(aUpper, aLower)
+		bb = Line(bUpper, bLower)
 		
 		hull = [f for f in A and B if  True] #need to continue working on this
 		
