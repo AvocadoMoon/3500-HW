@@ -97,11 +97,22 @@ class Line():
 		self.yInt = a[1] - (m * a[0])
 
 	def pointSlope(self, x):
-		return (self.m*x) + self.b
+		y = ((self.m*x) + self.yInt)
+		return y
+	
+	def pointSlopeY(self, y):
+		x = (y - self.yInt) / self.m
+		return x
 
 #determines whether a point is within the area
-def inBetween(aUpper, aLower, bUpper):
-	pass
+def inBetween(upper, leftSide, lower, rightSide, point):
+	# yT = upper.pointSlope(point[0]) #ytop at the points x
+	# yB = lower.pointSlope(point[0])
+	xL = leftSide.pointSlopeY(point[1])
+	xR = rightSide.pointSlopeY(point[1])
+	if (xL < point[0]) and (point[0] < xR):
+		return True
+	return False
 
 def tangent(mPoint, oPoint, set, mIndex, upper=True):
 	n = (mIndex + 1) % len(set)
@@ -151,8 +162,8 @@ def computeHull(points):
 		# then the clockwise sort is needed because of rotating through the hull
 		ai = len(asort) - 1
 		bi = 0
-		aUpper, aLower = asort[ai]
-		bUpper, bLower = bsort[bi]
+		aUpper, aLower = asort[ai], asort[ai]
+		bUpper, bLower = bsort[bi], bsort[bi]
 		ai = A.index(aUpper)
 		bi = B.index(bUpper)
 
@@ -179,9 +190,13 @@ def computeHull(points):
 		lowerLine = Line(aLower, bLower)
 		aa = Line(aUpper, aLower)
 		bb = Line(bUpper, bLower)
-		
-		hull = [f for f in A and B if  True] #need to continue working on this
-		
+
+
+		hull = [f for f in points if not(inBetween(upperLine, aa, lowerLine, bb, f))] #need to continue working on this
+
+		xsort = sorted(hull, key=lambda p: p[0])
+		clockwiseSort(hull)
+		return hull, xsort
 		#need to figure out what to do with these tangents, and how to implement them within the united set
 		# maybe ever point past the x point from the newly made tangent then get ride of from hull
 	else:

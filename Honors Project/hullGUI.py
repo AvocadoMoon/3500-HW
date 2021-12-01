@@ -23,7 +23,7 @@ def showPoints(event):
 	print(points)
 
 def drawHull():
-	hull = copy.copy(computeHull(points))
+	hull = copy.copy(computeHull(points)[0])
 	hull.append(hull[0])
 	for i in range(0,len(hull)-1):
 		x1 = hull[i][0]
@@ -49,8 +49,8 @@ w = Canvas(master,
            height=canvas_height)
 
 laptop = r"E:\Downloads\School\CS\CS 3500\3500-HW\Honors Project\oldhusky.gif"
-pc = r"C:\Users\Zeke\OneDrive\School\CS\CS_3500\HW\Honors Project\oldhusky.gif"
-ram = PhotoImage(file=laptop)
+pc = r"C:\Users\Zeke\OneDrive\School\CS\CS_3500\3500-HW\Honors Project\oldhusky.gif"
+ram = PhotoImage(file=pc)
 w.pack()
 w.bind('<Button-1>', addPoint)
 
