@@ -3,7 +3,7 @@
 # from tkinter import *
 from tkinter import *
 import copy
-from convexhull import computeHull
+from convexhull import bruteForce, computeHull
 
 
 def hello(event):
@@ -23,7 +23,7 @@ def showPoints(event):
 	print(points)
 
 def drawHull():
-	hull = copy.copy(computeHull(points)[0])
+	hull = copy.copy(computeHull(points))
 	hull.append(hull[0])
 	for i in range(0,len(hull)-1):
 		x1 = hull[i][0]

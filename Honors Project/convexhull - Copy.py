@@ -1,6 +1,6 @@
 import math
 import sys
-from tkinter.constants import RIGHT
+from tkinter.constants import NO, RIGHT
 
 EPSILON = sys.float_info.epsilon
 
@@ -37,13 +37,10 @@ positive if it is counter-clockwise,
 and zero if the points are collinear.
 '''
 #helper function for cw, ccw, and collinear
-# def triangleArea(a, b, c):
-# 	return (a[0]*b[1] - a[1]*b[0] + a[1]*c[0] \
-#                 - a[0]*c[1] + b[0]*c[1] - c[0]*b[1]) / 2.0;
-
 def triangleArea(a, b, c):
-	res = (b[1] - a[1]) * (c[0] - b[0]) - (c[1] - b[1]) * (b[0] - a[0])
-	return res
+	return (a[0]*b[1] - a[1]*b[0] + a[1]*c[0] \
+                - a[0]*c[1] + b[0]*c[1] - c[0]*b[1]) / 2.0;
+
 
 #check if a-1 -> a -> a+1 are clockwise
 '''
@@ -85,6 +82,7 @@ def clockwiseSort(points):
 	angle = lambda p:  ((math.atan2(p[1] - yavg, p[0] - xavg) + 2*math.pi) % (2*math.pi))
 	points.sort(key = angle)
 
+
 def leftMostIndex(points):
     minn = 0
 
@@ -110,11 +108,10 @@ def rightMostIndex(points):
 
 
 #B and counterclockwise means going down
-#A and clockwise means lower tangent
+#A and clockwise means going down
 def tangent(a, b, c, A=True, upper=True):
 	if (A and upper) or (not(A) and not(upper)):
-		res = ccw(a, b, c)
-		return res
+		return ccw(a, b, c)
 	elif (A and not(upper)) or (not(A) and upper):
 		return cw(a, b , c)
 	
@@ -137,30 +134,27 @@ def computeHull(points):
 		bin = bi
 
 		done = 0
-		#upper tangent
 		while(not(done)):
 			done = 1
 
-			while (triangleArea(B[bin], A[ain], A[(ain-1) % len(A)]) >= 0): #a needs to move counter clockwise so a-1 mod len
-				ain = (ain - 1) % len(A)
+			while (tangent(B[bin], A[ain], A[(ain+1) % len(A)], True, True)):
+				ain = (ain + 1) % len(A)
 			
-			while (triangleArea(A[ain], B[bin], B[(bin+1) % len(B)]) <= 0):
-				bin = (bin + 1) % len(B)
+			while (tangent(A[ain], B[bin], B[(bin-1) % len(B)], False, True)):
+				bin = (bin - 1) % len(B)
 				done = 0
 		
 		aUpper, bUpper = ain, bin
 		done = 0
 		ain, bin = ai, bi
-
-		#lower tangent
 		while(not(done)):
 			done = 1
 
-			while (triangleArea(B[bin], A[ain], A[(ain+1) % len(A)]) >= 0):
-				ain = (ain + 1) % len(A)
+			while (tangent(B[bin], A[ain], A[(ain-1) % len(A)], True, False)):
+				ain = (ain - 1) % len(A)
 			
-			while (triangleArea(A[ain], B[bin], B[(bin-1) % len(B)]) <= 0):
-				bin = (bin - 1) % len(B)
+			while (tangent(A[ain], B[bin], B[(bin+1) % len(B)], False, False)):
+				bin = (bin + 1) % len(B)
 				done = 0
 		
 		aLower, bLower = ain, bin
@@ -171,15 +165,16 @@ def computeHull(points):
 			ind = (ind + 1) % len(A)
 			hull.append(A[ind])
 		
-		ind = bUpper
-		hull.append(B[bUpper])
-		while(ind != bLower):
+		ind = bLower
+		hull.append(B[bLower])
+		while(ind != bUpper):
 			ind = (ind + 1) % len(B)
 			hull.append(B[ind])
 
 		return hull
 	else:
 		return bruteForce(points)
+
 
 def bruteForce(points):
 	n = len(points)
@@ -191,7 +186,11 @@ def bruteForce(points):
  
 	hull = []
      
-
+	'''
+    Start from leftmost point, keep moving counterclockwise
+    until reach the start point again. This loop runs O(h)
+    times where h is number of points in result or output.
+    '''
 	p = l
 	q = 0
 	while(True):
@@ -199,6 +198,13 @@ def bruteForce(points):
         # Add current point to result
 		hull.append(points[p])
  
+		'''
+        Search for a point 'q' such that orientation(p, q,
+        x) is counterclockwise for all points 'x'. The idea
+        is to keep track of last visited most counterclock-
+        wise point in q. If any point 'i' is more counterclock-
+        wise than q, then update q.
+        '''
 		q = (p + 1) % n
  
 		for i in range(n):
@@ -208,6 +214,11 @@ def bruteForce(points):
 			if(ccw(points[p],points[i], points[q])):
 				q = i
 
+		'''
+        Now q is the most counterclockwise with respect to p
+        Set p as q for next iteration, so that q is added to
+        result 'hull'
+        '''
 		p = q
  
 		# While we don't come to first point
