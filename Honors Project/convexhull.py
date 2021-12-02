@@ -12,10 +12,7 @@ compute and return the (x,y) coordinates
 of the y intercept of the line segment p1->p2
 with the line segment (x,y3)->(x,y4)
 '''
-# shoudl be used to see if point a + 1, b + 1, a - 1, and b - 1 to make sure it does not intercept with the
-# tangent line, input a + 1 x cord for x, region between the two points for y3, y4
-# if the y point from this function is equivelant to the y point of a + 1 then it is known an interception happens
-# and can not use that tangent  
+
 def yint(p1, p2, x, y3, y4):
 	x1, y1 = p1
 	x2, y2 = p2
@@ -39,13 +36,12 @@ and zero if the points are collinear.
 #helper function for cw, ccw, and collinear
 # def triangleArea(a, b, c):
 # 	return (a[0]*b[1] - a[1]*b[0] + a[1]*c[0] \
-#                 - a[0]*c[1] + b[0]*c[1] - c[0]*b[1]) / 2.0;
+#                 - a[0]*c[1] + b[0]*c[1] - c[0]*b[1]) / 2.0
 
 def triangleArea(a, b, c):
 	res = (b[1] - a[1]) * (c[0] - b[0]) - (c[1] - b[1]) * (b[0] - a[0])
 	return res
 
-#check if a-1 -> a -> a+1 are clockwise
 '''
 Given three points a,b,c,
 returns True if and only if 
@@ -53,7 +49,7 @@ a,b,c represents a clockwise sequence
 (subject to floating-point precision)
 '''
 def cw(a, b, c):
-	return triangleArea(a,b,c) < EPSILON;
+	return triangleArea(a,b,c) < EPSILON
 '''
 Given three points a,b,c,
 returns True if and only if 
@@ -61,7 +57,7 @@ a,b,c represents a counter-clockwise sequence
 (subject to floating-point precision)
 '''
 def ccw(a, b, c):
-	return triangleArea(a,b,c) > EPSILON;
+	return triangleArea(a,b,c) > EPSILON
 
 '''
 Given three points a,b,c,
@@ -141,10 +137,12 @@ def computeHull(points):
 		while(not(done)):
 			done = 1
 
-			while (triangleArea(B[bin], A[ain], A[(ain-1) % len(A)]) >= 0): #a needs to move counter clockwise so a-1 mod len
+			#A upper should be ccw
+			while (not(ccw(B[bin], A[ain], A[(ain-1) % len(A)]))): #a needs to move counter clockwise so a-1 mod len
 				ain = (ain - 1) % len(A)
 			
-			while (triangleArea(A[ain], B[bin], B[(bin+1) % len(B)]) <= 0):
+			#B upper should be cw
+			while (not(cw(A[ain], B[bin], B[(bin+1) % len(B)]))): #b needs to move clockwise to go up
 				bin = (bin + 1) % len(B)
 				done = 0
 		
@@ -156,10 +154,12 @@ def computeHull(points):
 		while(not(done)):
 			done = 1
 
-			while (triangleArea(B[bin], A[ain], A[(ain+1) % len(A)]) >= 0):
+			#A lower should be cw
+			while (not(cw(B[bin], A[ain], A[(ain+1) % len(A)]))):
 				ain = (ain + 1) % len(A)
 			
-			while (triangleArea(A[ain], B[bin], B[(bin-1) % len(B)]) <= 0):
+			#B lower should be ccw
+			while (not(ccw(A[ain], B[bin], B[(bin-1) % len(B)]))):
 				bin = (bin - 1) % len(B)
 				done = 0
 		
