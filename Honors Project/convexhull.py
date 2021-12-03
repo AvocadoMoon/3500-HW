@@ -119,6 +119,7 @@ def tangent(a, b, c, A=True, upper=True):
 Replace the implementation of computeHull with a correct computation of the convex hull
 using the divide-and-conquer algorithm. Must return points in clockwise order for drawing purposes.
 '''
+
 def computeHull(points):
 	if (len(points) > 5):
 		mid = len(points) // 2
@@ -167,16 +168,17 @@ def computeHull(points):
 		hull = []
 		ind = aLower
 		hull.append(A[aLower])
+		#adds to finished hull the left hull, A, in clockwise order
 		while(ind != aUpper):
 			ind = (ind + 1) % len(A)
 			hull.append(A[ind])
 		
 		ind = bUpper
 		hull.append(B[bUpper])
+		#adds to finished hull the right hull, B, in clockwise order
 		while(ind != bLower):
 			ind = (ind + 1) % len(B)
 			hull.append(B[ind])
-
 		return hull
 	else:
 		return bruteForce(points)
