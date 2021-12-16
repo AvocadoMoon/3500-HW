@@ -1,27 +1,6 @@
 import convexhull as ch
 import unittest
 
-class TestLine(unittest.TestCase):
-
-    def setUp(self):
-        a = (1, 1)
-        b = (2, 2)
-        self.line = ch.Line(a, b)
-
-    def test_Slope(self):
-        self.assertEqual(self.line.m, 1)
-    
-    def test_Yintercept(self):
-        self.assertEqual(self.line.yInt, 0)
-    
-    def test_pointSlope(self):
-        y = self.line.pointSlope(3)
-        self.assertEqual(y, 3)
-    
-    def test_pointSlopeY(self):
-        x = self.line.pointSlopeY(3)
-        self.assertEqual(x, 3)
-
 class TestHull(unittest.TestCase):
 
     def test_twoTriangles(self):
@@ -43,20 +22,8 @@ class TestHelperFunctions(unittest.TestCase):
     #     ch.tangent()
     
 
-    def test_inBetween(self):
-        leftSide = ch.Line((1, 1), (2, 4))
-        self.assertEqual(leftSide.m, 3)
-        self.assertEqual(leftSide.yInt, -2)
-
-        rightSide = ch.Line((3, 2), (4, 5))
-        self.assertEqual(rightSide.m, 3)
-        self.assertEqual(rightSide.yInt, -7)
-
-        f = ch.inBetween(leftSide, rightSide, (2, 3))
-        self.assertTrue(f)
-
-        f= ch.inBetween(leftSide, rightSide, (0, 0))
-        self.assertTrue(not(f))
+    def test_rightMostIndex(self):
+        pass
 
 
 

@@ -23,7 +23,6 @@ def showPoints(event):
 	print(points)
 
 def drawHull():
-	points.sort(key= lambda p: p[0])
 	hull = copy.copy(computeHull(points))
 	hull.append(hull[0])
 	for i in range(0,len(hull)-1):

@@ -81,28 +81,23 @@ def clockwiseSort(points):
 	angle = lambda p:  ((math.atan2(p[1] - yavg, p[0] - xavg) + 2*math.pi) % (2*math.pi))
 	points.sort(key = angle)
 
+
+#O(n) time
 def leftMostIndex(points):
     minn = 0
-
     for i in range(1,len(points)):
         if points[i][0] < points[minn][0]:
             minn = i
-        elif points[i][0] == points[minn][0]:
-            if points[i][1] > points[minn][1]:
-                minn = i
     return minn
 
 
+#O(n) time
 def rightMostIndex(points):
 	maxx = 0
-
 	for i in range(1, len(points)):
 		if points[i][0] > points[maxx][0]:
 			maxx = i
-		elif points[i][0] == points[maxx][0]:
-			if points[i][1] > points[maxx][1]:
-				maxx = i
-		return maxx
+	return maxx
 
 
 #B and counterclockwise means going down
@@ -121,7 +116,13 @@ using the divide-and-conquer algorithm. Must return points in clockwise order fo
 '''
 
 def computeHull(points):
+	points.sort(key= lambda p: p[0])
+	return ch(points)
+
+
+def ch(points):
 	if (len(points) > 5):
+		#divides hull unitl each hull is 3-5 points
 		mid = len(points) // 2
 		A = computeHull(points[:mid])
 		B = computeHull(points[mid:])
