@@ -33,10 +33,6 @@ if a,b,c represents a clockwise sequence,
 positive if it is counter-clockwise,
 and zero if the points are collinear.
 '''
-#helper function for cw, ccw, and collinear
-# def triangleArea(a, b, c):
-# 	return (a[0]*b[1] - a[1]*b[0] + a[1]*c[0] \
-#                 - a[0]*c[1] + b[0]*c[1] - c[0]*b[1]) / 2.0
 
 def triangleArea(a, b, c):
 	res = (b[1] - a[1]) * (c[0] - b[0]) - (c[1] - b[1]) * (b[0] - a[0])
@@ -182,6 +178,7 @@ def ch(points):
 			hull.append(B[ind])
 		return hull
 	else:
+		#for the small hulls brute force is extremely quick and does not make the overall time much slower
 		return bruteForce(points)
 
 def bruteForce(points):
@@ -218,29 +215,3 @@ def bruteForce(points):
 			break
 	clockwiseSort(hull)
 	return hull
-
-'''
-FACTS:
-
-Points that get returned are part of the current hull, not the whole set of points will be returned.
-No three points forming the hull can be colinear.
-No two points are on a vertical line
-'''
-
-'''
-Intial sorting of list takes O(nlogn) time plus the O(n/2) time for going through the list and inching down to lowest tangential
-Split the list of points into smallest list possible, set of 2
-Afterwards, while merging sort the lists, this should take O(n) time, in addition after sort
-then compute the lowest tangent possible for that set taking another O(n) time. In total it sould be
-T(n) = 2T(n/2) + O(n) + O(n) => T(n) = 2T(n/2) + O(2n)
-
-Finding the low
-'''
-
-'''
-A convex hull is the smallest possible polygonal shape that can envelope some points within a graph.
-So by finding the convex hull at step i, all that is needed to know the convex hull at step i+1 is a lower tangential line that
-connects the two convex hulls and an upper line that connects the two convex hulls. Now those two convex hulls become one large convex hull.
-
-Smallest possible convex hull would be a triangle since it only contains three points, yet still creats a geometric shape
-'''
