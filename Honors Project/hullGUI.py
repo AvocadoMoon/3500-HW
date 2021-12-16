@@ -32,6 +32,18 @@ def drawHull():
 		y2 = hull[i+1][1]
 		w.create_line(x1, y1, x2, y2, width=3)
 
+def drawTestHull(hull):
+	hull.append(hull[0])
+	for i in range(0, len(hull)-1):
+		x, y = hull[i][0], hull[i][1]
+		drawPoint(w, x, y)
+	for i in range(0,len(hull)-1):
+		x1 = hull[i][0]
+		y1 = hull[i][1]
+		x2 = hull[i+1][0]
+		y2 = hull[i+1][1]
+		w.create_line(x1, y1, x2, y2, width=3)
+
 
 
 master = Tk()
@@ -48,7 +60,7 @@ w = Canvas(master,
            width=canvas_width,
            height=canvas_height)
 
-laptop = r"E:\Downloads\School\CS\CS 3500\3500-HW\Honors Project\oldhusky.gif"
+laptop = r"E:\Downloads\School\CS\CS 3500\3500-HW\Honors Project\Basic_red_square.png"
 pc = r"C:\Users\Zeke\OneDrive\School\CS\CS_3500\3500-HW\Honors Project\oldhusky.gif"
 ram = PhotoImage(file=laptop)
 w.pack()

@@ -113,7 +113,9 @@ using the divide-and-conquer algorithm. Must return points in clockwise order fo
 
 def computeHull(points):
 	points.sort(key= lambda p: p[0])
-	return ch(points)
+	h = ch(points)
+	clockwiseSort(h)
+	return h
 
 
 def ch(points):
