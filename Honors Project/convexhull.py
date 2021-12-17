@@ -112,9 +112,9 @@ using the divide-and-conquer algorithm. Must return points in clockwise order fo
 '''
 
 def computeHull(points):
-	points.sort(key= lambda p: p[0])
-	h = ch(points)
-	clockwiseSort(h)
+	points.sort(key= lambda p: p[0]) #O(nLog(n)) to intially sort the list by x coordinate
+	h = ch(points) #O(nLog(n)) to create convex hull
+	clockwiseSort(h) #O(nLog(n)) to sort convex hull in clockwise order
 	return h
 
 
