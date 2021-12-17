@@ -187,31 +187,24 @@ def bruteForce(points):
 	n = len(points)
 	if n < 3:
 		return
- 
     # Find the leftmost point
 	l = leftMostIndex(points)
- 
 	hull = []
-     
-
 	p = l
 	q = 0
+
 	while(True):
-         
         # Add current point to result
 		hull.append(points[p])
- 
 		q = (p + 1) % n
- 
+
 		for i in range(n):
-             
 			# If i is more counterclockwise
             # than current q, then update q
 			if(ccw(points[p],points[i], points[q])):
 				q = i
-
+				
 		p = q
- 
 		# While we don't come to first point
 		if(p == l):
 			break

@@ -6,8 +6,19 @@ import time
 
 class TestHull(unittest.TestCase):
 
-    def time(self, string):
-        print(string + "%f")
+    def time(self, brute, n, p):
+        if brute:
+            start = time.time()
+            h = ch.bruteForce(p)
+            end = time.time()
+            print("{} points O(n^2): {:.5f}".format(n, (end - start)))
+            return h
+        else:
+            start = time.time()
+            h = ch.computeHull(p)
+            end = time.time()
+            print("{} points O(nLogn): {:.5f}".format(n, (end - start)))
+            return h
 
     def points(self, n, xrange, yrange):
         points = []
@@ -36,65 +47,35 @@ class TestHull(unittest.TestCase):
             w.create_line(x1, y1, x2, y2, width=3)
     
     def test_benchCase(self):
-        p = self.points(5, 20, 20)
-        start = time.time()
-        f = ch.computeHull(p)
-        end = time.time()
-        print("5 points O(nlogn) time: %f" %(end-start))
-
-        start = time.time()
-        h = ch.bruteForce(p)
-        end = time.time()
-        print("5 points O(n^2): %f" %(end - start))
+        n = 5
+        p = self.points(n, n*10, n*10)
+        f = self.time(False, n, p)
+        h = self.time(True, n, p)
         self.assertEqual(f, h)
 
-        p = self.points(3, 20, 20)
-        start = time.time()
-        f = ch.computeHull(p)
-        end = time.time()
-        print("3 points O(nlogn) time: %f" %(end-start))
-
-        start = time.time()
-        h = ch.bruteForce(p)
-        end = time.time()
-        print("3 points O(n^2): %f" %(end - start))
+        n = 3
+        p = self.points(n, n*10, n*10)
+        f = self.time(False, n, p)
+        h = self.time(True, n, p)
         self.assertEqual(f, h)
 
     def test_smallHulls(self):
-        p = self.points(10, 800, 800)
-        start = time.time()
-        f = ch.computeHull(p)
-        end = time.time()
-        print("10 points O(nlogn) time: %f" %(end-start))
-
-        start = time.time()
-        h = ch.bruteForce(p)
-        end = time.time()
-        print("10 points O(n^2): %f" %(end - start))
+        n = 10
+        p = self.points(n, n*10, n*10)
+        f = self.time(False, n, p)
+        h = self.time(True, n, p)
         self.assertEqual(f, h)
 
-        p = self.points(50, 800, 800)
-        start = time.time()
-        f = ch.computeHull(p)
-        end = time.time()
-        print("50 points O(nlogn) time: %f" %(end-start))
-
-        start = time.time()
-        h = ch.bruteForce(p)
-        end = time.time()
-        print("50 points O(n^2): %f" %(end - start))
+        n = 50
+        p = self.points(n, n*10, n*10)
+        f = self.time(False, n, p)
+        h = self.time(True, n, p)
         self.assertEqual(f, h)
 
-        p = self.points(100, 800, 800)
-        start = time.time()
-        f = ch.computeHull(p)
-        end = time.time()
-        print("100 points O(nlogn) time: %f" %(end-start))
-
-        start = time.time()
-        h = ch.bruteForce(p)
-        end = time.time()
-        print("100 points O(n^2): %f" %(end - start))
+        n = 100
+        p = self.points(n, n*10, n*10)
+        f = self.time(False, n, p)
+        h = self.time(True, n, p)
         self.assertEqual(f, h)
     
     # def test_visual(self):
@@ -120,90 +101,42 @@ class TestHull(unittest.TestCase):
     #     w.mainloop()
     
     def test_mediumHulls(self):
-        p = self.points(1000, 2000, 2000)
-        start = time.time()
-        f = ch.computeHull(p)
-        end = time.time()
-        print("1,000 points O(nlogn) time: %f" %(end-start))
-
-        start = time.time()
-        h = ch.bruteForce(p)
-        end = time.time()
-        print("1,000 points O(n^2): %f" %(end - start))
+        n = 1000
+        p = self.points(n, n*2, n*2)
+        f = self.time(False, n, p)
+        h = self.time(True, n, p)
         self.assertEqual(f, h)
 
-        p = self.points(10000, 20000, 20000)
-        start = time.time()
-        f = ch.computeHull(p)
-        end = time.time()
-        print("10,000 points O(nlogn) time: %f" %(end-start))
-
-        start = time.time()
-        h = ch.bruteForce(p)
-        end = time.time()
-        print("10,000 points O(n^2): %f" %(end - start))
+        n = 10000
+        p = self.points(n, n*2, n*2)
+        f = self.time(False, n, p)
+        h = self.time(True, n, p)
         self.assertEqual(f, h)
     
-    def test_largeHulls(self):
-        p = self.points(100000, 200000, 200000)
-        start = time.time()
-        f = ch.computeHull(p)
-        end = time.time()
-        print("100,000 points O(nlogn) time: %f" %(end-start))
+    # def test_largeHulls(self):
+    #     n = 100000
+    #     p = self.points(n, (n + (n//2)), (n + (n//2)))
+    #     f = self.time(False, n, p)
+    #     h = self.time(True, n, p)
+    #     self.assertEqual(f, h)
 
-        start = time.time()
-        h = ch.bruteForce(p)
-        end = time.time()
-        print("100,000 points O(n^2): %f" %(end - start))
-        self.assertEqual(f, h)
+    #     n = 500000
+    #     p = self.points(n, (n + (n//2)), (n + (n//2)))
+    #     f = self.time(False, n, p)
+    #     h = self.time(True, n, p)
+    #     self.assertEqual(f, h)
 
-        p = self.points(500000, 600000, 600000)
-        start = time.time()
-        f = ch.computeHull(p)
-        end = time.time()
-        print("500,000 points O(nlogn) time: %f" %(end-start))
+    #     n = 1000000
+    #     p = self.points(n, (n + (n//2)), (n + (n//2)))
+    #     f = self.time(False, n, p)
+    #     h = self.time(True, n, p)
+    #     self.assertEqual(f, h)
 
-        start = time.time()
-        h = ch.bruteForce(p)
-        end = time.time()
-        print("500,000 points O(n^2): %f" %(end - start))
-        self.assertEqual(f, h)
-
-        p = self.points(1000000, 2000000, 2000000)
-        start = time.time()
-        f = ch.computeHull(p)
-        end = time.time()
-        print("1,000,000 points O(nlogn) time: %f" %(end-start))
-
-        start = time.time()
-        h = ch.bruteForce(p)
-        end = time.time()
-        print("1,000,000 points O(n^2): %f" %(end - start))
-        self.assertEqual(f, h)
-
-        p = self.points(5000000, 6000000, 6000000)
-        start = time.time()
-        f = ch.computeHull(p)
-        end = time.time()
-        print("5,000,000 points O(nlogn) time: %f" %(end-start))
-
-        start = time.time()
-        h = ch.bruteForce(p)
-        end = time.time()
-        print("5,000,000 points O(n^2): %f" %(end - start))
-        self.assertEqual(f, h)
-
-
-        
-
-class TestHelperFunctions(unittest.TestCase):
-
-    # def test_Tangent(self):
-    #     ch.tangent()
-    
-
-    def test_rightMostIndex(self):
-        pass
+    #     n = 5000000
+    #     p = self.points(n, (n + (n//2)), (n + (n//2)))
+    #     f = self.time(False, n, p)
+    #     h = self.time(True, n, p)
+    #     self.assertEqual(f, h)
 
 
 
